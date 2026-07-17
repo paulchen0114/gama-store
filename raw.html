@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>拾光雜貨鋪 | La-Petite-Brocante</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+TC:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            japandi: {
+              beige: '#FAF7F2',
+              cream: '#F4EFE6',
+              dark: '#2C2A29',
+              sand: '#D0B8A0',
+              clay: '#A88C74',
+              sage: '#8C8275',
+              white: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'Noto Serif TC', 'serif'],
+            sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FAF7F2;
+      color: #2C2A29;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      overflow-x: hidden;
+    }
+    canvas#japandi-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #FAF7F2;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #D0B8A0;
+      border-radius: 3px;
+    }
+    .page-section {
+      transition: opacity 0.4s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Canvas Background for Japandi Soft Light Dust -->
+  <canvas id="japandi-canvas"></canvas>
+
+  <!-- Global Alert Banner for API errors -->
+  <div id="global-error-banner" class="hidden bg-red-100 border-b border-red-200 text-red-800 px-4 py-3 text-center text-sm sticky top-0 z-50">
+    <span class="font-medium">網頁顯示異常，請重新整理頁面。</span>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-japandi-beige/90 backdrop-blur-md border-b border-japandi-sand/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#home" class="flex flex-col items-start">
+          <span class="font-serif text-xl sm:text-2xl tracking-widest font-bold text-japandi-dark">La-Petite-Brocante</span>
+          <span class="text-xs tracking-[0.3em] text-japandi-clay font-serif">拾光雜貨鋪</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#home" class="nav-link text-sm tracking-widest text-japandi-dark hover:text-japandi-sand transition-colors duration-300 font-medium">首頁</a>
+          <a href="#shop" class="nav-link text-sm tracking-widest text-japandi-dark hover:text-japandi-sand transition-colors duration-300 font-medium">精選商品</a>
+          <a href="#about" class="nav-link text-sm tracking-widest text-japandi-dark hover:text-japandi-sand transition-colors duration-300 font-medium">關於我們</a>
+          <a href="#contact" class="nav-link text-sm tracking-widest text-japandi-dark hover:text-japandi-sand transition-colors duration-300 font-medium">聯絡我們</a>
+        </nav>
+
+        <!-- Cart & Mobile Menu Button -->
+        <div class="flex items-center space-x-4">
+          <!-- Cart Button -->
+          <a href="#cart" id="cart-nav-btn" class="relative p-2 text-japandi-dark hover:text-japandi-sand transition-colors duration-300">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-japandi-sand rounded-full">0</span>
+          </a>
+
+          <!-- Mobile Menu Toggle -->
+          <button id="mobile-menu-btn" class="md:hidden p-2 text-japandi-dark hover:text-japandi-sand focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-japandi-cream border-b border-japandi-sand/20 px-4 pt-2 pb-4 space-y-2">
+      <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-japandi-dark hover:bg-japandi-beige">首頁</a>
+      <a href="#shop" class="block px-3 py-2 rounded-md text-base font-medium text-japandi-dark hover:bg-japandi-beige">精選商品</a>
+      <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-japandi-dark hover:bg-japandi-beige">關於我們</a>
+      <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-japandi-dark hover:bg-japandi-beige">聯絡我們</a>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow">
+
+    <!-- HOME PAGE -->
+    <section id="page-home" class="page-section hidden">
+      <!-- Hero Section -->
+      <div class="relative bg-japandi-cream py-20 sm:py-32 overflow-hidden border-b border-japandi-sand/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div class="max-w-2xl">
+            <span class="text-xs tracking-[0.4em] uppercase text-japandi-clay font-serif block mb-4">La Petite Brocante</span>
+            <h1 class="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-japandi-dark mb-6">
+              拾光雜貨鋪
+            </h1>
+            <p class="text-base sm:text-lg text-japandi-sage leading-relaxed mb-8 font-serif">
+              仕女的秘密梳妝台（香氛與飾品收納）<br>
+              - 古典雕花手柄鏡與首飾托盤：讓早晨的梳化變成一場神聖的法式儀式。<br>
+              - 南法古董市集封蠟章套組：用火漆的溫度，封存每一封寄出的思念。
+            </p>
+            <div class="flex space-x-4">
+              <a href="#shop" class="inline-block bg-japandi-dark text-japandi-beige px-8 py-3.5 text-sm tracking-widest font-medium hover:bg-japandi-sand hover:text-japandi-dark transition-all duration-300">探索精選</a>
+              <a href="#about" class="inline-block border border-japandi-dark text-japandi-dark px-8 py-3.5 text-sm tracking-widest font-medium hover:bg-japandi-dark hover:text-japandi-beige transition-all duration-300">品牌故事</a>
+            </div>
+          </div>
+        </div>
+        <!-- Soft decorative glow -->
+        <div class="absolute right-0 bottom-0 w-96 h-96 bg-japandi-sand/10 rounded-full blur-3xl -mr-20 -mb-20"></div>
+      </div>
+
+      <!-- Latest Products Section -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div>
+            <span class="text-xs tracking-widest text-japandi-clay uppercase font-serif">New Arrivals</span>
+            <h2 class="font-serif text-3xl font-bold text-japandi-dark mt-2">新品推薦</h2>
+          </div>
+          <a href="#shop" class="text-sm tracking-widest text-japandi-clay hover:text-japandi-dark font-medium mt-4 md:mt-0 flex items-center gap-2 transition-colors">
+            查看所有商品 <i class="fa-solid fa-arrow-right-long"></i>
+          </a>
+        </div>
+
+        <!-- Home Product Grid -->
+        <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOP PAGE -->
+    <section id="page-shop" class="page-section hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center max-w-xl mx-auto mb-12">
+          <span class="text-xs tracking-widest text-japandi-clay uppercase font-serif">Collection</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-japandi-dark mt-2">精選商品</h1>
+          <p class="text-sm text-japandi-sage mt-4">穿梭於時光之中的法式優雅，為您的日常角落點綴浪漫詩意。</p>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-between mb-10 pb-6 border-b border-japandi-sand/20">
+          <!-- Categories -->
+          <div id="category-filters" class="flex flex-wrap gap-2 justify-center md:justify-start">
+            <button class="cat-btn active px-4 py-2 text-xs tracking-widest uppercase border border-japandi-dark bg-japandi-dark text-japandi-beige transition-all duration-300" data-category="all">全部商品</button>
+            <!-- Dynamic Categories -->
+          </div>
+
+          <!-- Search Bar -->
+          <div class="relative w-full md:w-80">
+            <input type="text" id="search-input" placeholder="搜尋商品名稱/品牌..." class="w-full bg-white border border-japandi-sand/30 px-4 py-2.5 pl-10 text-sm focus:outline-none focus:border-japandi-sand transition-colors">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-japandi-sage text-sm"></i>
+          </div>
+        </div>
+
+        <!-- Shop Product Grid -->
+        <div id="shop-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT DETAIL PAGE -->
+    <section id="page-product-detail" class="page-section hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Back Button -->
+        <a href="#shop" class="inline-flex items-center gap-2 text-sm text-japandi-sage hover:text-japandi-dark mb-8 transition-colors">
+          <i class="fa-solid fa-arrow-left"></i> 返回商品列表
+        </a>
+
+        <div id="product-detail-container" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Dynamic Product Details -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT US PAGE -->
+    <section id="page-about" class="page-section hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <!-- Left: Shop Photo -->
+          <div class="lg:col-span-5">
+            <div class="relative aspect-[4/5] overflow-hidden bg-japandi-cream border border-japandi-sand/20">
+              <img id="about-shop-photo" src="" alt="拾光雜貨鋪" class="w-full h-full object-cover opacity-90">
+              <div class="absolute inset-0 bg-gradient-to-t from-japandi-dark/10 to-transparent"></div>
+            </div>
+          </div>
+
+          <!-- Right: Story (Hardcoded) -->
+          <div class="lg:col-span-7 lg:pl-8">
+            <span class="text-xs tracking-[0.3em] text-japandi-clay uppercase font-serif block mb-3">Our Story</span>
+            <h1 class="font-serif text-3xl sm:text-4xl font-bold text-japandi-dark mb-8">拾光雜貨鋪的故事</h1>
+            <div class="text-japandi-sage leading-relaxed space-y-6 text-base font-serif whitespace-pre-line">
+在巴黎瑪黑區的僻靜巷弄裡，有一家沒有招牌的舊貨鋪。店主 Claire (克萊兒) 是一位熱愛旅行的採集者。每個週末清晨，當整座城市還在沉睡時，她便會開著舊篷車，穿梭在法國與義大利的鄉間市集裡。
+
+她深信，每一件沾染了歲月痕跡的小物——無論是黃銅雕花的燭台、邊緣有些微磨損的蕾絲桌巾，還是散發著淡淡木質香的復古首飾盒——都承載著某個歐洲家庭曾經的歡笑與溫度。
+
+「La Petite Brocante 拾光雜貨鋪」 便是 Claire 將這些「生活碎片」分享給世界的起點。我們不只販售物件，更想為你捎來歐洲午後那抹溫柔、慵懶且精緻的陽光，讓你的日常角落，也能擁有塞納河畔的浪漫詩意。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT US PAGE -->
+    <section id="page-contact" class="page-section hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center max-w-xl mx-auto mb-16">
+          <span class="text-xs tracking-widest text-japandi-clay uppercase font-serif">Get In Touch</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-japandi-dark mt-2">聯絡我們</h1>
+          <p class="text-sm text-japandi-sage mt-4">如有任何商品諮詢或合作提案，歡迎與我們取得聯繫。</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Left: Contact Form -->
+          <div class="lg:col-span-7 bg-white p-8 border border-japandi-sand/20">
+            <h2 class="font-serif text-xl font-bold text-japandi-dark mb-6">傳送訊息</h2>
+            <form id="contact-form" class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-xs uppercase tracking-wider text-japandi-sage mb-2 font-medium">姓名 <span class="text-red-500">*</span></label>
+                  <input type="text" id="contact-name" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-3 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+                <div>
+                  <label class="block text-xs uppercase tracking-wider text-japandi-sage mb-2 font-medium">Email <span class="text-red-500">*</span></label>
+                  <input type="email" id="contact-email" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-3 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider text-japandi-sage mb-2 font-medium">電話</label>
+                <input type="tel" id="contact-phone" class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-3 text-sm focus:outline-none focus:border-japandi-sand">
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider text-japandi-sage mb-2 font-medium">描述 (最多 500 字)</label>
+                <textarea id="contact-desc" rows="5" maxlength="500" class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-3 text-sm focus:outline-none focus:border-japandi-sand resize-none"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-japandi-dark text-japandi-beige py-3.5 text-sm tracking-widest font-medium hover:bg-japandi-sand hover:text-japandi-dark transition-all duration-300">送出訊息</button>
+            </form>
+          </div>
+
+          <!-- Right: Contact Info Cards -->
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+            <div class="bg-japandi-cream p-8 border border-japandi-sand/10 h-full flex flex-col justify-between">
+              <div>
+                <h2 class="font-serif text-xl font-bold text-japandi-dark mb-8">聯絡資訊</h2>
+                <div id="contact-info-container" class="space-y-6">
+                  <!-- Dynamic Contact Info Links -->
+                </div>
+              </div>
+              <!-- Decorative elements -->
+              <div class="mt-8 pt-8 border-t border-japandi-sand/20 text-xs text-japandi-sage tracking-widest font-serif">
+                LA PETITE BROCANTE
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CART & CHECKOUT PAGE -->
+    <section id="page-cart" class="page-section hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 class="font-serif text-3xl font-bold text-japandi-dark mb-10 text-center">購物車與結帳</h1>
+
+        <!-- Payment Disabled Alert -->
+        <div id="payment-disabled-msg" class="hidden bg-yellow-50 border border-yellow-200 text-yellow-800 p-6 text-center mb-8">
+          <p class="font-serif text-lg font-medium mb-2">購物功能暫未啟用</p>
+          <p class="text-sm text-yellow-700">本店目前僅供商品展示，暫不提供線上交易與結帳服務。如有需要請聯絡我們。</p>
+        </div>
+
+        <div id="cart-active-container" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Left: Cart Items -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="bg-white p-6 border border-japandi-sand/20">
+              <h2 class="font-serif text-lg font-bold text-japandi-dark mb-6 pb-4 border-b border-japandi-sand/10">購物清單</h2>
+              <div id="cart-items-list" class="space-y-6 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                <!-- Dynamic Cart Items -->
+              </div>
+            </div>
+
+            <!-- Free Shipping Progress -->
+            <div id="free-shipping-banner" class="bg-japandi-cream p-6 border border-japandi-sand/10">
+              <div class="flex justify-between text-sm mb-2">
+                <span class="font-medium text-japandi-dark" id="free-shipping-text">免運門檻提示</span>
+                <span class="font-bold text-japandi-clay" id="free-shipping-status">計算中...</span>
+              </div>
+              <div class="w-full bg-japandi-beige h-2 rounded-full overflow-hidden">
+                <div id="free-shipping-bar" class="bg-japandi-sand h-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Checkout Form -->
+          <div class="lg:col-span-5">
+            <div class="bg-white p-6 border border-japandi-sand/20 sticky top-24">
+              <h2 class="font-serif text-lg font-bold text-japandi-dark mb-6 pb-4 border-b border-japandi-sand/10">結帳明細</h2>
+              
+              <!-- Pricing Summary -->
+              <div class="space-y-4 mb-6 text-sm">
+                <div class="flex justify-between text-japandi-sage">
+                  <span>商品小計</span>
+                  <span id="summary-subtotal">NT$ 0</span>
+                </div>
+                <div class="flex justify-between text-japandi-sage">
+                  <span>運費</span>
+                  <span id="summary-shipping">NT$ 0</span>
+                </div>
+                <div class="flex justify-between text-base font-bold text-japandi-dark pt-4 border-t border-japandi-sand/10">
+                  <span>總計金額</span>
+                  <span id="summary-total">NT$ 0</span>
+                </div>
+              </div>
+
+              <!-- Customer Info Form -->
+              <form id="checkout-form" class="space-y-4">
+                <h3 class="text-xs uppercase tracking-wider text-japandi-clay font-bold mb-3">收件人資訊</h3>
+                <div>
+                  <input type="text" id="cust-name" placeholder="收件人姓名" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-2.5 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+                <div>
+                  <input type="tel" id="cust-phone" placeholder="聯絡電話" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-2.5 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+                <div>
+                  <input type="email" id="cust-email" placeholder="Email" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-2.5 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+                <div>
+                  <input type="text" id="cust-address" placeholder="收件地址" required class="w-full bg-japandi-beige border border-japandi-sand/20 px-4 py-2.5 text-sm focus:outline-none focus:border-japandi-sand">
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="pt-4 border-t border-japandi-sand/10">
+                  <h3 class="text-xs uppercase tracking-wider text-japandi-clay font-bold mb-3">付款方式</h3>
+                  <div class="space-y-2" id="payment-methods-container">
+                    <!-- Dynamic Payment Options -->
+                  </div>
+                </div>
+
+                <button type="submit" id="submit-order-btn" class="w-full bg-japandi-dark text-japandi-beige py-3.5 text-sm tracking-widest font-medium hover:bg-japandi-sand hover:text-japandi-dark transition-all duration-300 mt-6">
+                  建立訂單並付款
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-japandi-dark text-japandi-cream py-12 border-t border-japandi-sand/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-japandi-sage/20">
+        <div class="flex flex-col items-center md:items-start">
+          <span class="font-serif text-lg tracking-widest font-bold">La-Petite-Brocante</span>
+          <span class="text-xs tracking-[0.3em] text-japandi-sand font-serif mt-1">拾光雜貨鋪</span>
+        </div>
+        <div class="flex space-x-6 text-sm tracking-widest font-serif">
+          <a href="#home" class="hover:text-japandi-sand transition-colors">首頁</a>
+          <a href="#shop" class="hover:text-japandi-sand transition-colors">精選商品</a>
+          <a href="#about" class="hover:text-japandi-sand transition-colors">關於我們</a>
+          <a href="#contact" class="hover:text-japandi-sand transition-colors">聯絡我們</a>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between pt-8 text-xs text-japandi-sage tracking-wider gap-4">
+        <span>&copy; 2026 拾光雜貨鋪. All Rights Reserved.</span>
+        <span>Powered by <a href="https://chandone.pages.dev" target="_blank" class="underline hover:text-japandi-sand transition-colors">ChanDone</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bank Transfer Modal -->
+  <div id="bank-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-japandi-dark/50 backdrop-blur-sm p-4">
+    <div class="bg-white max-w-md w-full p-8 border border-japandi-sand/30 shadow-xl relative">
+      <button onclick="closeBankModal()" class="absolute top-4 right-4 text-japandi-sage hover:text-japandi-dark">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-circle-check text-2xl"></i>
+        </div>
+        <h3 class="font-serif text-xl font-bold text-japandi-dark">訂單建立成功</h3>
+        <p class="text-sm text-japandi-sage mt-2">請於三日內完成匯款以保留您的商品</p>
+      </div>
+      <div class="bg-japandi-beige p-5 space-y-3 text-sm border border-japandi-sand/10">
+        <div class="flex justify-between">
+          <span class="text-japandi-sage">匯款銀行</span>
+          <span class="font-medium text-japandi-dark" id="modal-bank-name">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-japandi-sage">戶名</span>
+          <span class="font-medium text-japandi-dark" id="modal-bank-acc-name">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-japandi-sage">帳號</span>
+          <span class="font-medium text-japandi-dark font-mono" id="modal-bank-acc-num">-</span>
+        </div>
+        <div class="flex justify-between pt-3 border-t border-japandi-sand/10">
+          <span class="text-japandi-sage">應匯金額</span>
+          <span class="font-bold text-japandi-clay" id="modal-bank-amount">-</span>
+        </div>
+      </div>
+      <button onclick="closeBankModal()" class="w-full bg-japandi-dark text-japandi-beige py-3 text-sm tracking-widest font-medium hover:bg-japandi-sand hover:text-japandi-dark transition-all duration-300 mt-6">
+        我知道了
+      </button>
+    </div>
+  </div>
+
+  <!-- Dynamic Form for Newebpay Redirect -->
+  <form id="newebpay-form" method="POST" action="" class="hidden"></form>
+
+  <!-- JavaScript Implementation -->
+  <script>
+    // --- API Configuration ---
+    const API_BASE = 'https://grocery-496707.de.r.appspot.com';
+    const API_HEADERS = {
+      'X-API-Key': '2fc1cf4b-a31f-4ebb-803b-f6f082d13240',
+      'Content-Type': 'application/json'
+    };
+
+    // --- State Management ---
+    let shopInfo = null;
+    let cart = JSON.parse(localStorage.getItem('la_petite_cart') || '[]');
+    let categories = [];
+    let currentProducts = [];
+
+    // --- Canvas Light Dust Effect ---
+    const canvas = document.getElementById('japandi-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height + canvas.height;
+        this.size = Math.random() * 4 + 1;
+        this.speedY = -(Math.random() * 0.4 + 0.1);
+        this.speedX = Math.random() * 0.2 - 0.1;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.fadeSpeed = Math.random() * 0.002 + 0.001;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y < 0) {
+          this.y = canvas.height;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(208, 184, 160, ${this.opacity})`; // Warm sand color
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 40; i++) {
+        particles.push(new Particle());
+      }
+    }
+    initParticles();
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // --- Core Router ---
+    window.addEventListener('hashchange', router);
+    window.addEventListener('DOMContentLoaded', async () => {
+      await fetchShopInfo();
+      updateCartCount();
+      router();
+    });
+
+    function router() {
+      const hash = window.location.hash || '#home';
+      
+      // Hide all sections
+      document.querySelectorAll('.page-section').forEach(section => {
+        section.classList.add('hidden');
+        section.style.opacity = 0;
+      });
+
+      // Mobile Menu Close
+      document.getElementById('mobile-menu').classList.add('hidden');
+
+      // Highlight Active Nav Link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        if (link.getAttribute('href') === hash) {
+          link.classList.add('text-japandi-sand');
+        } else {
+          link.classList.remove('text-japandi-sand');
+        }
+      });
+
+      // Route matching
+      if (hash === '#home') {
+        const sec = document.getElementById('page-home');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        loadHomePage();
+      } else if (hash === '#shop') {
+        const sec = document.getElementById('page-shop');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        loadShopPage();
+      } else if (hash.startsWith('#product-detail')) {
+        const sec = document.getElementById('page-product-detail');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        const params = new URLSearchParams(hash.split('?')[1]);
+        loadProductDetailPage(params.get('id'));
+      } else if (hash === '#about') {
+        const sec = document.getElementById('page-about');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        loadAboutPage();
+      } else if (hash === '#contact') {
+        const sec = document.getElementById('page-contact');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        loadContactPage();
+      } else if (hash === '#cart') {
+        const sec = document.getElementById('page-cart');
+        sec.classList.remove('hidden');
+        setTimeout(() => sec.style.opacity = 1, 50);
+        loadCartPage();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- Mobile Menu Toggle ---
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // --- API Error Handler ---
+    function handleApiError(error, context = '') {
+      console.error(`API Error in ${context}:`, error);
+      if (context === 'shop-info') {
+        alert("購物流程出現錯誤，請重新整理網頁再次嘗試。");
+      } else {
+        document.getElementById('global-error-banner').classList.remove('hidden');
+      }
+    }
+
+    // --- Fetch Shop Info ---
+    async function fetchShopInfo() {
+      try {
+        const res = await fetch(`${API_BASE}/api/shop-info`, { headers: API_HEADERS });
+        if (!res.ok) throw new Error('Failed to fetch shop info');
+        shopInfo = await res.json();
+        
+        // If payment is disabled, adjust cart UI
+        if (shopInfo.payment_settings?.disable_payment) {
+          document.getElementById('cart-nav-btn').classList.add('hidden');
+        }
+      } catch (error) {
+        handleApiError(error, 'shop-info');
+      }
+    }
+
+    // --- Page Load: HOME ---
+    async function loadHomePage() {
+      const grid = document.getElementById('home-products-grid');
+      grid.innerHTML = '<div class="col-span-full text-center py-12 text-japandi-sage">尋找美物中...</div>';
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/products`, { headers: API_HEADERS });
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const products = await res.json();
+        
+        // Take latest 10 products
+        const latest = products.slice(0, 10);
+        renderProductGrid(latest, grid);
+      } catch (error) {
+        handleApiError(error, 'home-products');
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">網頁顯示異常，請重新整理頁面。</div>';
+      }
+    }
+
+    // --- Page Load: SHOP ---
+    async function loadShopPage() {
+      const grid = document.getElementById('shop-products-grid');
+      grid.innerHTML = '<div class="col-span-full text-center py-12 text-japandi-sage">尋找美物中...</div>';
+
+      try {
+        // Fetch Categories
+        if (categories.length === 0) {
+          const catRes = await fetch(`${API_BASE}/api/categories`, { headers: API_HEADERS });
+          if (catRes.ok) {
+            categories = await catRes.json();
+            renderCategoryFilters();
+          }
+        }
+
+        // Fetch All Products
+        const res = await fetch(`${API_BASE}/api/products`, { headers: API_HEADERS });
+        if (!res.ok) throw new Error('Failed to fetch products');
+        currentProducts = await res.json();
+        
+        renderProductGrid(currentProducts, grid);
+      } catch (error) {
+        handleApiError(error, 'shop-products');
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">網頁顯示異常，請重新整理頁面。</div>';
+      }
+    }
+
+    // Render Category Buttons
+    function renderCategoryFilters() {
+      const container = document.getElementById('category-filters');
+      container.innerHTML = `<button class="cat-btn active px-4 py-2 text-xs tracking-widest uppercase border border-japandi-dark bg-japandi-dark text-japandi-beige transition-all duration-300" data-category="all">全部商品</button>`;
+      
+      categories.forEach(cat => {
+        container.innerHTML += `
+          <button class="cat-btn px-4 py-2 text-xs tracking-widest uppercase border border-japandi-sand/30 hover:border-japandi-dark transition-all duration-300" data-category="${cat.id}">
+            ${cat.name}
+          </button>
+        `;
+      });
+
+      // Bind Clicks
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.cat-btn').forEach(b => {
+            b.classList.remove('active', 'bg-japandi-dark', 'text-japandi-beige');
+            b.classList.add('border-japandi-sand/30');
+          });
+          btn.classList.add('active', 'bg-japandi-dark', 'text-japandi-beige');
+          btn.classList.remove('border-japandi-sand/30');
+
+          filterProducts();
+        });
+      });
+    }
+
+    // Filter Products client-side based on Category and Search
+    function filterProducts() {
+      const activeBtn = document.querySelector('.cat-btn.active');
+      const catId = activeBtn ? activeBtn.getAttribute('data-category') : 'all';
+      const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+
+      let filtered = currentProducts;
+
+      if (catId !== 'all') {
+        filtered = filtered.filter(p => p.category_id === catId);
+      }
+
+      if (searchVal) {
+        filtered = filtered.filter(p => 
+          (p.name && p.name.toLowerCase().includes(searchVal)) || 
+          (p.brand && p.brand.toLowerCase().includes(searchVal)) ||
+          (p.description && p.description.toLowerCase().includes(searchVal))
+        );
+      }
+
+      renderProductGrid(filtered, document.getElementById('shop-products-grid'));
+    }
+
+    // Search Input Event
+    let searchTimeout;
+    document.getElementById('search-input').addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        filterProducts();
+      }, 300);
+    });
+
+    // Render Product Grid Utility
+    function renderProductGrid(products, container) {
+      if (products.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-12 text-japandi-sage">找不到相符的商品。</div>';
+        return;
+      }
+
+      container.innerHTML = products.map(p => {
+        const imgUrl = p.images && p.images.length > 0 ? p.images[0] : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80';
+        const formattedPrice = parseFloat(p.price).toLocaleString();
+        
+        return `
+          <div class="group relative flex flex-col bg-white border border-japandi-sand/10 overflow-hidden hover:shadow-lg transition-all duration-500">
+            <div class="aspect-square overflow-hidden bg-japandi-cream relative">
+              <img src="${imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
+              <div class="absolute inset-0 bg-japandi-dark/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </div>
+            <div class="p-6 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] tracking-widest text-japandi-clay uppercase font-serif block mb-1">${p.brand || 'La Petite Brocante'}</span>
+                <h3 class="font-serif text-base font-bold text-japandi-dark group-hover:text-japandi-sand transition-colors duration-300 line-clamp-1">
+                  <a href="#product-detail?id=${p.id}">${p.name}</a>
+                </h3>
+                <p class="text-xs text-japandi-sage mt-2 line-clamp-2 leading-relaxed">${p.description || ''}</p>
+              </div>
+              <div class="mt-6 flex items-center justify-between pt-4 border-t border-japandi-sand/10">
+                <span class="font-serif text-sm font-bold text-japandi-dark">NT$ ${formattedPrice}</span>
+                <a href="#product-detail?id=${p.id}" class="text-xs tracking-widest text-japandi-clay hover:text-japandi-dark font-medium uppercase flex items-center gap-1.5 transition-colors">
+                  探索細節 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Page Load: PRODUCT DETAIL ---
+    async function loadProductDetailPage(id) {
+      const container = document.getElementById('product-detail-container');
+      container.innerHTML = '<div class="col-span-full text-center py-12 text-japandi-sage">細細品味中...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/products/${id}`, { headers: API_HEADERS });
+        if (!res.ok) throw new Error('Failed to fetch product details');
+        const product = await res.json();
+
+        const imgUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80';
+        const formattedPrice = parseFloat(product.price).toLocaleString();
+
+        // Specs rendering
+        let specsHtml = '';
+        if (product.specs && Object.keys(product.specs).length > 0) {
+          specsHtml = `
+            <div class="mt-8 pt-6 border-t border-japandi-sand/20">
+              <h4 class="text-xs uppercase tracking-wider text-japandi-clay font-bold mb-3">商品規格</h4>
+              <dl class="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2 text-xs text-japandi-sage">
+                ${Object.entries(product.specs).map(([key, val]) => `
+                  <div class="flex justify-between py-1 border-b border-japandi-sand/5">
+                    <dt class="font-medium">${key}</dt>
+                    <dd class="text-japandi-dark">${val}</dd>
+                  </div>
+                `).join('')}
+              </dl>
+            </div>
+          `;
+        }
+
+        // Add to Cart Button logic
+        const disablePayment = shopInfo?.payment_settings?.disable_payment;
+        const cartBtnHtml = !disablePayment ? `
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <div class="flex items-center border border-japandi-sand/30 bg-white">
+              <button onclick="adjustDetailQty(-1)" class="px-4 py-3 text-japandi-sage hover:text-japandi-dark"><i class="fa-solid fa-minus text-xs"></i></button>
+              <input type="number" id="detail-qty" value="1" min="1" class="w-12 text-center text-sm font-medium focus:outline-none bg-transparent" readonly>
+              <button onclick="adjustDetailQty(1)" class="px-4 py-3 text-japandi-sage hover:text-japandi-dark"><i class="fa-solid fa-plus text-xs"></i></button>
+            </div>
+            <button onclick="addToCart('${product.id}', '${product.name.replace(/'/g, "\\'")}', ${product.price}, '${imgUrl}')" class="flex-grow bg-japandi-dark text-japandi-beige px-8 py-3.5 text-sm tracking-widest font-medium hover:bg-japandi-sand hover:text-japandi-dark transition-all duration-300">
+              加入購物車
+            </button>
+          </div>
+        ` : `
+          <div class="mt-8 bg-japandi-cream p-4 border border-japandi-sand/10 text-xs text-japandi-sage leading-relaxed">
+            本店目前僅供商品展示，暫不提供線上交易。如有需要，歡迎透過「聯絡我們」與我們聯繫。
+          </div>
+        `;
+
+        container.innerHTML = `
+          <!-- Left: Image Gallery -->
+          <div class="lg:col-span-6">
+            <div class="aspect-square overflow-hidden bg-japandi-cream border border-japandi-sand/10 relative">
+              <img src="${imgUrl}" alt="${product.name}" class="w-full h-full object-cover">
+            </div>
+          </div>
+
+          <!-- Right: Details -->
+          <div class="lg:col-span-6 flex flex-col justify-between">
+            <div>
+              <span class="text-xs tracking-widest text-japandi-clay uppercase font-serif block mb-2">${product.brand || 'La Petite Brocante'}</span>
+              <h1 class="font-serif text-2xl sm:text-3xl font-bold text-japandi-dark mb-4">${product.name}</h1>
+              <p class="text-xs text-japandi-clay font-serif mb-6">分類：${product.category_name || '精選小物'}</p>
+              <div class="font-serif text-xl font-bold text-japandi-dark mb-6">NT$ ${formattedPrice}</div>
+              <div class="text-sm text-japandi-sage leading-relaxed whitespace-pre-line">${product.description || ''}</div>
+              
+              ${specsHtml}
+            </div>
+
+            ${cartBtnHtml}
+          </div>
+        `;
+      } catch (error) {
+        handleApiError(error, 'product-detail');
+        container.innerHTML = '<div class="col-span-full text-center py-12 text-red-500">網頁顯示異常，請重新整理頁面。</div>';
+      }
+    }
+
+    // Detail Qty Adjust
+    window.adjustDetailQty = function(amount) {
+      const input = document.getElementById('detail-qty');
+      let val = parseInt(input.value) + amount;
+      if (val < 1) val = 1;
+      input.value = val;
+    }
+
+    // Add to Cart Action
+    window.addToCart = function(id, name, price, img) {
+      const qtyInput = document.getElementById('detail-qty');
+      const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ id, name, price, img, qty });
+      }
+
+      localStorage.setItem('la_petite_cart', JSON.stringify(cart));
+      updateCartCount();
+      alert(`已成功將 ${qty} 件「${name}」加入購物車。`);
+    }
+
+    // Update Cart Badge Count
+    function updateCartCount() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').innerText = count;
+    }
+
+    // --- Page Load: ABOUT US ---
+    function loadAboutPage() {
+      const imgEl = document.getElementById('about-shop-photo');
+      if (shopInfo && shopInfo.shop_photo_url) {
+        imgEl.src = shopInfo.shop_photo_url;
+      } else {
+        imgEl.src = 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
+      }
+    }
+
+    // --- Page Load: CONTACT US ---
+    async function loadContactPage() {
+      const container = document.getElementById('contact-info-container');
+      container.innerHTML = '<div class="text-japandi-sage text-sm">載入中...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/contact-info`, { headers: API_HEADERS });
+        if (!res.ok) throw new Error('Failed to fetch contact info');
+        const contactData = await res.json();
+
+        container.innerHTML = contactData.map(info => {
+          let href = '#';
+          let icon = 'fa-circle-info';
+          let label = info.type;
+
+          if (info.type === 'email') {
+            href = `mailto:${info.value}`;
+            icon = 'fa-envelope';
+            label = '電子郵件';
+          } else if (info.type === 'phone') {
+            href = `tel:${info.value}`;
+            icon = 'fa-phone';
+            label = '聯絡電話';
+          } else if (info.type === 'address') {
+            href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(info.value)}`;
+            icon = 'fa-location-dot';
+            label = '實體門市';
+          } else if (info.type === 'line') {
+            href = `https://line.me/R/ti/p/~${info.value}`;
+            icon = 'fa-comment';
+            label = 'LINE 客服';
+          } else if (info.type === 'line_qr') {
+            return `
+              <div class="flex items-start gap-4 p-4 bg-white border border-japandi-sand/10">
+                <div class="text-japandi-clay mt-1"><i class="fa-solid fa-qrcode text-lg"></i></div>
+                <div>
+                  <span class="block text-xs text-japandi-sage uppercase tracking-wider">LINE QR Code</span>
+                  <img src="${info.value}" alt="Line QR" class="w-24 h-24 mt-2 border border-japandi-sand/10">
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <a href="${href}" target="_blank" class="flex items-start gap-4 p-4 bg-white border border-japandi-sand/10 hover:border-japandi-sand transition-all duration-300 group">
+              <div class="text-japandi-clay group-hover:text-japandi-dark transition-colors mt-1"><i class="fa-solid ${icon} text-lg"></i></div>
+              <div>
+                <span class="block text-xs text-japandi-sage uppercase tracking-wider">${label}</span>
+                <span class="text-sm font-medium text-japandi-dark group-hover:text-japandi-clay transition-colors mt-1 block">${info.value}</span>
+              </div>
+            </a>
+          `;
+        }).join('');
+      } catch (error) {
+        handleApiError(error, 'contact-info');
+        container.innerHTML = '<div class="text-red-500 text-sm">無法載入聯絡資訊。</div>';
+      }
+    }
+
+    // Contact Form Submit Action
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const phone = document.getElementById('contact-phone').value;
+      const description = document.getElementById('contact-desc').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/submit_form`, {
+          method: 'POST',
+          headers: API_HEADERS,
+          body: JSON.stringify({ name, email, phone, description })
+        });
+
+        if (!res.ok) throw new Error('Failed to submit form');
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          alert('訊息已成功送出，我們會盡快與您聯繫！');
+          document.getElementById('contact-form').reset();
+        } else {
+          alert('送出失敗：' + (data.error || '未知錯誤'));
+        }
+      } catch (error) {
+        handleApiError(error, 'submit-form');
+        alert('系統繁忙，請稍後再試。');
+      }
+    });
+
+    // --- Page Load: CART & CHECKOUT ---
+    function loadCartPage() {
+      const disablePayment = shopInfo?.payment_settings?.disable_payment;
+      
+      if (disablePayment) {
+        document.getElementById('payment-disabled-msg').classList.remove('hidden');
+        document.getElementById('cart-active-container').classList.add('hidden');
+      } else {
+        document.getElementById('payment-disabled-msg').classList.add('hidden');
+        document.getElementById('cart-active-container').classList.remove('hidden');
+        renderCartPage();
+      }
+    }
+
+    function renderCartPage() {
+      const listContainer = document.getElementById('cart-items-list');
+      
+      if (cart.length === 0) {
+        listContainer.innerHTML = '<div class="text-center py-12 text-japandi-sage">購物車是空的。</div>';
+        updateSummary(0);
+        return;
+      }
+
+      listContainer.innerHTML = cart.map((item, index) => {
+        const formattedPrice = parseFloat(item.price).toLocaleString();
+        return `
+          <div class="flex items-center gap-4 py-4 border-b border-japandi-sand/10 last:border-0">
+            <img src="${item.img}" alt="${item.name}" class="w-16 h-16 object-cover bg-japandi-cream border border-japandi-sand/10">
+            <div class="flex-grow">
+              <h4 class="font-serif text-sm font-bold text-japandi-dark line-clamp-1">${item.name}</h4>
+              <p class="text-xs text-japandi-clay mt-1">NT$ ${formattedPrice}</p>
+              <div class="flex items-center mt-2 border border-japandi-sand/20 w-max bg-japandi-beige">
+                <button onclick="adjustCartQty(${index}, -1)" class="px-2.5 py-1 text-japandi-sage hover:text-japandi-dark"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                <span class="w-8 text-center text-xs font-medium">${item.qty}</span>
+                <button onclick="adjustCartQty(${index}, 1)" class="px-2.5 py-1 text-japandi-sage hover:text-japandi-dark"><i class="fa-solid fa-plus text-[10px]"></i></button>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${index})" class="text-japandi-sage hover:text-red-500 p-2 transition-colors">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      // Calculate totals
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      updateSummary(subtotal);
+      renderPaymentMethods();
+    }
+
+    window.adjustCartQty = function(index, amount) {
+      cart[index].qty += amount;
+      if (cart[index].qty < 1) cart[index].qty = 1;
+      localStorage.setItem('la_petite_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartPage();
+    }
+
+    window.removeFromCart = function(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('la_petite_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartPage();
+    }
+
+    function updateSummary(subtotal) {
+      const shippingFee = shopInfo?.payment_settings?.shipping_fee ?? 65;
+      const threshold = shopInfo?.payment_settings?.free_shipping_threshold;
+      
+      let finalShipping = shippingFee;
+      let freeShippingStatusText = '';
+      let progressPercent = 0;
+
+      if (threshold !== null && threshold !== undefined) {
+        if (subtotal >= threshold) {
+          finalShipping = 0;
+          freeShippingStatusText = '已達免運門檻！';
+          progressPercent = 100;
+        } else {
+          const diff = threshold - subtotal;
+          freeShippingStatusText = `再買 NT$ ${diff.toLocaleString()} 元享免運`;
+          progressPercent = (subtotal / threshold) * 100;
+        }
+        document.getElementById('free-shipping-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('free-shipping-banner').classList.add('hidden');
+      }
+
+      const total = subtotal + finalShipping;
+
+      document.getElementById('summary-subtotal').innerText = `NT$ ${subtotal.toLocaleString()}`;
+      document.getElementById('summary-shipping').innerText = finalShipping === 0 ? '免費' : `NT$ ${finalShipping.toLocaleString()}`;
+      document.getElementById('summary-total').innerText = `NT$ ${total.toLocaleString()}`;
+      
+      document.getElementById('free-shipping-status').innerText = freeShippingStatusText;
+      document.getElementById('free-shipping-bar').style.width = `${progressPercent}%`;
+    }
+
+    function renderPaymentMethods() {
+      const container = document.getElementById('payment-methods-container');
+      const settings = shopInfo?.payment_settings;
+      
+      if (!settings) return;
+
+      let html = '';
+      if (settings.is_credit_card_enabled) {
+        html += `
+          <label class="flex items-center gap-3 p-3 border border-japandi-sand/20 bg-japandi-beige cursor-pointer">
+            <input type="radio" name="payment_method" value="credit_card" checked class="text-japandi-dark focus:ring-japandi-sand">
+            <span class="text-sm font-medium text-japandi-dark"><i class="fa-regular fa-credit-card mr-2"></i> 信用卡線上刷卡</span>
+          </label>
+        `;
+      }
+      if (settings.is_bank_transfer_enabled) {
+        const isChecked = !settings.is_credit_card_enabled ? 'checked' : '';
+        html += `
+          <label class="flex items-center gap-3 p-3 border border-japandi-sand/20 bg-japandi-beige cursor-pointer">
+            <input type="radio" name="payment_method" value="bank_transfer" ${isChecked} class="text-japandi-dark focus:ring-japandi-sand">
+            <span class="text-sm font-medium text-japandi-dark"><i class="fa-solid fa-building-columns mr-2"></i> 銀行轉帳 / ATM</span>
+          </label>
+        `;
+      }
+
+      if (!html) {
+        html = '<p class="text-xs text-red-500">目前無可用的付款方式，請聯絡客服。</p>';
+        document.getElementById('submit-order-btn').disabled = true;
+      } else {
+        document.getElementById('submit-order-btn').disabled = false;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // --- Checkout Form Submission ---
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (cart.length === 0) {
+        alert('您的購物車目前沒有商品。');
+        return;
+      }
+
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const email = document.getElementById('cust-email').value;
+      const address = document.getElementById('cust-address').value;
+      const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+
+      if (!paymentMethod) {
+        alert('請選擇付款方式。');
+        return;
+      }
+
+      // Calculate final amount
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const shippingFee = shopInfo?.payment_settings?.shipping_fee ?? 65;
+      const threshold = shopInfo?.payment_settings?.free_shipping_threshold;
+      const finalShipping = (threshold !== null && subtotal >= threshold) ? 0 : shippingFee;
+      const amount = subtotal + finalShipping;
+
+      // Item description string
+      const itemDesc = cart.map(item => `${item.name} x ${item.qty}`).join(', ');
+
+      const orderData = {
+        amount,
+        item_desc: itemDesc,
+        payment_method: paymentMethod,
+        items: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty
+        })),
+        customer_data: { name, phone, address, email }
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/create-payment`, {
+          method: 'POST',
+          headers: API_HEADERS,
+          body: JSON.stringify(orderData)
+        });
+
+        if (!res.ok) throw new Error('Failed to create payment');
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          // Clear Cart
+          cart = [];
+          localStorage.setItem('la_petite_cart', JSON.stringify(cart));
+          updateCartCount();
+
+          if (paymentMethod === 'credit_card') {
+            // Redirect to Newebpay
+            const form = document.getElementById('newebpay-form');
+            form.action = data.newebpay_url;
+            form.innerHTML = `
+              <input type="hidden" name="MerchantID" value="${data.MerchantID}">
+              <input type="hidden" name="TradeInfo" value="${data.TradeInfo}">
+              <input type="hidden" name="TradeSha" value="${data.TradeSha}">
+              <input type="hidden" name="Version" value="${data.Version}">
+            `;
+            form.submit();
+          } else if (paymentMethod === 'bank_transfer') {
+            // Show Bank Details Modal
+            const settings = shopInfo?.payment_settings;
+            document.getElementById('modal-bank-name').innerText = settings?.bank_name || '-';
+            document.getElementById('modal-bank-acc-name').innerText = settings?.bank_account_name || '-';
+            document.getElementById('modal-bank-acc-num').innerText = settings?.bank_account_number || '-';
+            document.getElementById('modal-bank-amount').innerText = `NT$ ${amount.toLocaleString()}`;
+            
+            document.getElementById('bank-modal').classList.remove('hidden');
+          }
+        } else {
+          alert('訂單建立失敗：' + (data.error || '未知錯誤'));
+        }
+      } catch (error) {
+        handleApiError(error, 'shop-info');
+      }
+    });
+
+    window.closeBankModal = function() {
+      document.getElementById('bank-modal').classList.add('hidden');
+      window.location.hash = '#home';
+    }
+  </script>
+</body>
+</html>
