@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>付款結果 | 拾光雜貨鋪 La-Petite-Brocante</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #F9F7F2;
+            --bg-card: rgba(255, 255, 255, 0.88);
+            --bg-secondary: #EFECE6;
+            --text-main: #2C2A29;
+            --text-muted: #736E67;
+            --accent-wood: #A67C52;
+            --accent-wood-hover: #8C643E;
+            --border-color: #E2DDD5;
+            
+            --color-success: #4A7C59;
+            --color-success-bg: #EAF2EB;
+            --color-error: #B85B5B;
+            --color-error-bg: #FBF0F0;
+            --color-info: #A67C52;
+            --color-info-bg: #F5EFE8;
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --font-serif: 'Noto Serif TC', serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Ambient Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.65;
+        }
+
+        /* Centered Card Layout */
+        .result-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 44px 32px;
+            box-shadow: 0 20px 40px rgba(44, 42, 41, 0.06);
+            text-align: center;
+            animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Brand Logo Header */
+        .brand-header {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 28px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .brand-header .cn {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+
+        .brand-header .en {
+            font-size: 0.65rem;
+            letter-spacing: 2.5px;
+            color: var(--accent-wood);
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* Status Icon Wrappers & Animations */
+        .icon-wrapper {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .icon-wrapper.success {
+            background-color: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .icon-wrapper.error {
+            background-color: var(--color-error-bg);
+            color: var(--color-error);
+        }
+
+        .icon-wrapper.info {
+            background-color: var(--color-info-bg);
+            color: var(--color-info);
+        }
+
+        /* SVG Keyframe Animations */
+        .animated-svg {
+            width: 52px;
+            height: 52px;
+        }
+
+        .svg-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2.5;
+            stroke-miterlimit: 10;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards 0.2s;
+        }
+
+        .svg-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.7s forwards;
+        }
+
+        .svg-cross-1, .svg-cross-2 {
+            stroke-dasharray: 40;
+            stroke-dashoffset: 40;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+        }
+
+        .svg-cross-2 {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+
+        /* Typography */
+        .status-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .status-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        /* Order Info Box */
+        .order-info-card {
+            background: rgba(239, 236, 230, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: var(--font-sans);
+        }
+
+        .order-badge {
+            background-color: var(--accent-wood);
+            color: #FFFFFF;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .message-box {
+            background-color: var(--color-error-bg);
+            border: 1px solid #F5C2C7;
+            color: var(--color-error);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 0.88rem;
+            margin-bottom: 28px;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .message-subtext {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-wood);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-wood-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(166, 124, 82, 0.25);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-wood);
+            color: var(--accent-wood);
+            background-color: var(--bg-primary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .result-card {
+                padding: 32px 20px;
+            }
+            .status-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Canvas Effect -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="result-container">
+        <div class="result-card" id="result-card">
+            <!-- Brand Logo Header -->
+            <div class="brand-header">
+                <span class="cn">拾光雜貨鋪</span>
+                <span class="en">La-Petite-Brocante</span>
+            </div>
+
+            <!-- Content Area (Rendered via JS) -->
+            <div id="status-content">
+                <!-- JS Inject -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Canvas Animation (Floating Japandi Ambient Light Particles) ---
+        function initCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 22 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 45 + 18,
+                color: `rgba(${200 + Math.random()*35}, ${180 + Math.random()*30}, ${150 + Math.random()*30}, ${0.04 + Math.random()*0.05})`,
+                vx: (Math.random() - 0.5) * 0.25,
+                vy: (Math.random() - 0.5) * 0.25
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < -50) p.x = width + 50;
+                    if (p.x > width + 50) p.x = -50;
+                    if (p.y < -50) p.y = height + 50;
+                    if (p.y > height + 50) p.y = -50;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- Safe HTML Escape Helper ---
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- Parse URL & Render Result State ---
+        function renderPaymentResult() {
+            const params = new URLSearchParams(window.location.search);
+            const merchantOrderNo = params.get('MerchantOrderNo');
+            const status = params.get('Status');
+            const message = params.get('Message');
+
+            const contentEl = document.getElementById('status-content');
+
+            // ⚠️ State 1: No URL Parameters / Direct Access
+            if (!merchantOrderNo && !status) {
+                contentEl.innerHTML = `
+                    <div class="icon-wrapper info">
+                        <svg class="animated-svg" viewBox="0 0 52 52" fill="none">
+                            <circle class="svg-circle" cx="26" cy="26" r="23" stroke="currentColor"/>
+                            <path class="svg-check" d="M26 16v13M26 35h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h1 class="status-title">查無訂單資訊</h1>
+                    <p class="status-subtitle">未獲取到有效的訂單結果資料。若有任何疑問，歡迎聯絡我們的顧客服務團隊。</p>
+                    <div class="actions-group">
+                        <a href="/" class="btn btn-primary">返回首頁</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // ✅ State 2: Payment Success (Status === 'SUCCESS')
+            if (status === 'SUCCESS') {
+                contentEl.innerHTML = `
+                    <div class="icon-wrapper success">
+                        <svg class="animated-svg" viewBox="0 0 52 52" fill="none">
+                            <circle class="svg-circle" cx="26" cy="26" r="23" stroke="currentColor"/>
+                            <path class="svg-check" d="M14 27l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h1 class="status-title">付款成功！</h1>
+                    <p class="status-subtitle">感謝您的訂購，我們已收到您的付款，將盡快為您準備專屬的手作選品與包裝。</p>
+                    
+                    <div class="order-info-card">
+                        <div class="info-row">
+                            <span class="info-label">訂單編號</span>
+                            <span class="order-badge">${escapeHtml(merchantOrderNo)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">交易狀態</span>
+                            <span class="info-value" style="color: var(--color-success);">已完成付款</span>
+                        </div>
+                    </div>
+
+                    ${message ? `<p class="message-subtext">金流訊息：${escapeHtml(message)}</p>` : ''}
+
+                    <div class="actions-group" style="margin-top: 24px;">
+                        <a href="/" class="btn btn-primary">返回首頁</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // ❌ State 3: Payment Failure (Status !== 'SUCCESS')
+            contentEl.innerHTML = `
+                <div class="icon-wrapper error">
+                    <svg class="animated-svg" viewBox="0 0 52 52" fill="none">
+                        <circle class="svg-circle" cx="26" cy="26" r="23" stroke="currentColor"/>
+                        <path class="svg-cross-1" d="M16 16l20 20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        <path class="svg-cross-2" d="M36 16L16 36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1 class="status-title">付款未完成</h1>
+                <p class="status-subtitle">很抱歉，此次交易未能成功完成。請確認您的信用卡或扣款帳戶狀態，稍後再試。</p>
+                
+                ${merchantOrderNo ? `
+                    <div class="order-info-card" style="margin-bottom: 16px;">
+                        <div class="info-row">
+                            <span class="info-label">訂單編號</span>
+                            <span class="info-value">${escapeHtml(merchantOrderNo)}</span>
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${message ? `
+                    <div class="message-box">
+                        <strong>說明：</strong> ${escapeHtml(message)}
+                    </div>
+                ` : ''}
+
+                <div class="actions-group">
+                    <button onclick="history.back()" class="btn btn-primary">重新結帳</button>
+                    <a href="/" class="btn btn-outline">返回首頁</a>
+                </div>
+            `;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initCanvas();
+            renderPaymentResult();
+        });
+    </script>
+</body>
+</html>
